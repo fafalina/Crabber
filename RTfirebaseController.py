@@ -34,6 +34,7 @@ def CBDelete():
         print("移除完畢")
     else:
         print("並無此章節")
+
     
 ###主程式 初始化區塊 ###
 datas = [{"no":1, "name":"Voy"},
