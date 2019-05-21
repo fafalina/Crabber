@@ -12,21 +12,21 @@ def CheckKey(no, datas):
     return key_id
 
 #查詢
-def RTDGet():
+def RTDGet(fb):
     return fb.get(path, None)
     '''
     for key,value in result.items():
         print("id={}\tno={}\tname={}".format(key,value["no"],value["name"]))
     '''
 #儲data至firebase
-def RTDPost():
+def RTDPost(fb):
     for data in datas:
         fb.post(path, data)
         print("{} 儲存完畢".format(data))
 
 #從firebase中移除指定NO那層所有資料
-def RTDDelete():
-    datas = RTDGet()
+def RTDDelete(fb):
+    datas = RTDGet(fb)
     no = input("請輸入要刪除的章節\n")
     key_id = CheckKey(no, datas)
     if(key_id != ''):
@@ -36,8 +36,8 @@ def RTDDelete():
         print("並無此章節")
 
 #修改firebase
-def RTDPut():
-    datas = RTDGet()
+def RTDPut(fb):
+    datas = RTDGet(fb)
     no = input("請輸入要修改的章節\n")
     name = input("請輸入姓名\n")
     key_id = CheckKey(no, datas)
