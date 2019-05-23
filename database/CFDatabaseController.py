@@ -3,8 +3,11 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 def CFSet(novel_name, chapter_id, datas):
+    #新增內容
     db_ref = db.collection("novel").document(novel_name).collection("chapter").document(chapter_id)
     db_ref.set(datas)
+    #TODO 新增最後更新時間
+
 
 
 cred = credentials.Certificate("C:\\Users\\HighSpeed\\Desktop\\Crabber-Firesbase\\serviceAccountKey.json")
