@@ -2,14 +2,32 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-def CFSet(novel_name, chapter_id, datas):
-    db_ref = db.collection("novel").document(novel_name).collection("chapter").document(chapter_id)
-    db_ref.set(datas)
+#將小說內容寫入資料庫
+def CF_Set(novel):
+    #新增內容
+    try:
+        db_ref = db.collection("novel").document(novel.novel_name).collection("chapter").document(str(novel.chapter_id))
+        db_ref.set(novel.data_to_dict().get_data())
+    except Exception:
+        print('novel isn\'t exist')
+    #TODO 新增最後更新時間
 
+#TODO 尚未測試
+#從資料庫取得小說內容
+def CF_Get(novel):
+    try:
+        db_ref = db.collection("novel").document(novel.novel_name).collection("chapter").document(str(novel.chapter_id))
+    except Exception:
+        print('novel isn\'t exist')
 
-cred = credentials.Certificate("C:\\Users\\HighSpeed\\Desktop\\Crabber-Firesbase\\serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+    return db_ref.get()
 
+#資料庫初始化
+def DB_init():
+    cred = credentials.Certificate("C:\\Users\\HighSpeed\\Desktop\\Crabber-Firesbase\\serviceAccountKey.json")
+    firebase_admin.initialize_app(cred)
+
+DB_init()
 db = firestore.client()
 
 '''

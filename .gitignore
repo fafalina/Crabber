@@ -2,3 +2,7 @@
 serviceAccountKey\.json
 
 test\.py
+
+.vscode
+
+__pycache__
