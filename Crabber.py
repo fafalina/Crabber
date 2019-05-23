@@ -5,6 +5,21 @@ import re
 import os
 import time
 
+def get_novel_name():
+    #請求當前章節頁面  params為請求引數
+    r = requests.get(req_url, params=req_header) 
+    #soup轉換
+    soup=BeautifulSoup(r.text, "html.parser")
+    #以selcetor獲取章節名稱 
+    novel_name = soup.select('#info h1')[0]
+    #刪去不必要的東西
+    pattern = re.compile(r'<(/*)h1>') #移除<h1> & </h1>
+    novel_name = re.sub(pattern, "", str(novel_name))
+    #簡中轉繁中
+    novel_name = cv.s2t(novel_name)
+
+    return novel_name
+
 def get_chapter_content():
     #請求當前章節頁面  params為請求引數
     r = requests.get(req_url + txt_chapter, params=req_header) 
@@ -26,22 +41,6 @@ def get_chapter_content():
 
     return chapter_name, chapter_text
 
-def get_novel_name():
-    #請求當前章節頁面  params為請求引數
-    r = requests.get(req_url, params=req_header) 
-    #soup轉換
-    soup=BeautifulSoup(r.text, "html.parser")
-    #以selcetor獲取章節名稱 
-    novel_name = soup.select('#info h1')[0]
-    #刪去不必要的東西
-    pattern = re.compile(r'<(/*)h1>') #移除<h1> & </h1>
-    novel_name = re.sub(pattern, "", str(novel_name))
-    #簡中轉繁中
-    novel_name = cv.s2t(novel_name)
-
-    return novel_name
-
-
 #模擬瀏覽器
 req_header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
@@ -52,4 +51,3 @@ req_url_base = 'http://www.qu.la/book/'             #小說主地址
 req_url = req_url_base + "3137/"                    #單獨一本小說地址
 txt_chapter = '10542714.html'                       #某一章頁面地址 #list > dl > dd:nth-child(17) > a
 
-get_chapter_content()
