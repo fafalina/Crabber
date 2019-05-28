@@ -5,6 +5,7 @@ import re
 import os
 import time
 
+#取得小說名稱
 def get_novel_name():
     #請求當前章節頁面  params為請求引數
     r = requests.get(req_url, params=req_header) 
@@ -20,9 +21,10 @@ def get_novel_name():
 
     return novel_name
 
-def get_chapter_content():
+#取得小說某章節內容
+def get_chapter_content(sub_chapter):
     #請求當前章節頁面  params為請求引數
-    r = requests.get(req_url + txt_chapter, params=req_header) 
+    r = requests.get(req_url + chapter_url[sub_chapter], params=req_header) 
     #soup轉換
     soup=BeautifulSoup(r.text, "html.parser")
     #以selcetor獲取章節名稱                                    
@@ -41,13 +43,30 @@ def get_chapter_content():
 
     return chapter_name, chapter_text
 
+#取得小說所有章節的網址檔案名稱
+def get_all_chapter_url():
+    all_chapter_url = []
+    #請求當前章節頁面  params為請求引數
+    r = requests.get(req_url, params=req_header)
+    #soup轉換
+    soup=BeautifulSoup(r.text, "html.parser")
+    #找到此小說的所有章節網址
+    sub_page = soup.find_all(href=re.compile("/book/" + req_url_page))
+    for tag in sub_page:
+        sub_url = re.split(r'/', tag.get('href'))
+        all_chapter_url.append(sub_url[3])
+        
+    return all_chapter_url
+
+def get_chapter_num():
+    return len(chapter_url)
+
 #模擬瀏覽器
 req_header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
 }
 
-#TODO 自動取得頁面網址
-req_url_base = 'http://www.qu.la/book/'             #小說主地址
-req_url = req_url_base + "3137/"                    #單獨一本小說地址
-txt_chapter = '10542714.html'                       #某一章頁面地址 #list > dl > dd:nth-child(17) > a
-
+req_url_base = 'http://www.qu.la/book/'             #小說網站
+req_url_page = "3137/"                              #小說位址
+req_url = req_url_base + req_url_page               #單獨一本小說地址
+chapter_url = get_all_chapter_url()                 #小說所有頁面地址
