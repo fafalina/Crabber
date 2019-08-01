@@ -21,6 +21,21 @@ def get_novel_name():
 
     return novel_name
 
+#取得小說作者
+def get_novel_author():
+    #請求當前章節頁面  params為請求引數
+    r = requests.get(req_url, params=req_header) 
+    #soup轉換
+    soup=BeautifulSoup(r.text, "html.parser")
+    #以selcetor獲取章節名稱
+    author_name = soup.select('#info p')[0]
+    #刪去不必要的東西
+    pattern = re.compile(r'<(/*)p>') #移除<p1> & </p1>
+    author_name = re.sub(pattern, "", str(author_name))
+    author_name = re.sub(r'作  者：', "", str(author_name))
+
+    return author_name
+
 #取得小說某章節內容
 def get_chapter_content(sub_chapter):
     #請求當前章節頁面  params為請求引數
